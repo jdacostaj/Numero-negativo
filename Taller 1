@@ -1,4 +1,4 @@
-Ejercicio 1 
+﻿Ejercicio 1 
 
 Este taller consiste en mejorar las habilidades de los conceptos aprendidos en clase.
 
@@ -17,6 +17,11 @@ con VHDL, les dare algunos ejemplos para que se asocien al lenguaje como tal.
 
 2. Escriba los 4 principios de diseño de hardware aprendidos en clase.
 
+1. La simplicidad favorece la regularidad.
+2. Entre más pequeño, más rápido.
+3. Hacer el caso común más rápido.
+4. Buenos diseños demandan grandes compromisos. 
+
 3. Convertir a instrucciones de bajo nivel.
 
 int x=0; 
@@ -25,11 +30,36 @@ int z = 1;
 
 y=x+3;
 z=z+3;
-x=(x-z)+(3+y);
+x=(x-z)+ (3+y);
+
+add %g0, 0, %l0 ------------- x
+add %g0, 8, %l1 ------------- y
+add %g0, 1, %l2 ------------- z
+
+add %l0, 3, %l3 -------------- y=x+3
+add %l2, 3, %l4 -------------- z=z+3
+sub %l0, %l2, %l0 ----------- (x - z)
+add %l1, 3, %l1 -------------- (3 + y)
+add %l0, %l1, %l0 ----------- x = (x - z) + (3 + y)
+
+
+
+
+
 
 4. Usar el ld, y st.
 a[4]= a[2]+x;
+
+ld %l0, (2 * 4), l1 ----------- a [2]
+add %l1, %l2, %l3 ---------- a [2] + x
+st %l3, %l0, (4 * 4)---------- a [4] = a [2] + x
+
 y = y[40]+13;
+
+ld %l0, (40 * 4), %l1-------- y [40]
+add %l1, 13, l2 -------------- y [40] + 13
+add %l1, %l2, %l0 ---------- y = y [40] + 13
+
 
 5. Convertir a lenguaje de maquina.
 a.
@@ -39,6 +69,13 @@ int main(){
 	return i+3;
 }
 
+Add %g0, 3, %l0 ---------- i = 3	
+	10 10000 000000 00000 1 0000000000011	
+Add %g0, 2, %l1 ---------- p = 2
+	10 10001 000000 00000 1 0000000000010
+Add %l0, 3, %o1 ---------- i + 3 
+	10 01001 000000 10000 1 0000000000011
+
 b.
 int main(){
 	int p=3; x=1; z=4;
@@ -47,20 +84,44 @@ int main(){
 	return 0; 
 }
 
+Add %g0, 3, %l0 -------- p = 3
+	10 10000 000000 00000 1 0000000000011
+Add %g0, 1, %l1 -------- x = 1
+	10 10001 000000 00000 1 0000000000001
+Add %g0, 4, %l2 -------- z = 4
+	10 10010 000000 00000 1 0000000000100
+Add %g0, 0, %l3 -------- w = 0
+	10 10011 000000 00000 1 0000000000000
+
+Add %l0, 40, %l0 ------- p + 40
+	10 10000 000000 10000 1 0000000101000
+Sub %l1, %l2, %l1 ------ x – z
+	10 10001 000100 10001 0 00000000 10010
+Add %l0, %l1, %l3 ------ w = (p + 40) + (x - z)
+	10 10011 000000 10000 0 00000000 10001
+
+
+
+
 6. Inicializar las siguientes variables negativas usando OR.
 n=-12,
+or %g0,-12,%l0
+
 a=-11,
+or %g0,-11,%l2
+
 b=-14.
+or %g0,-14,%l5
+
+
 
 	Ejemplo: recuerde que me confundi con respecto a 
-	inicialización de una variable negativa, enmiendo mi error asi que les dejo
-	un ejemplo de como se inializa una variable negativa.
-	si tengo f=-10 entonces, en lenguaje de bajo nivel 
-	add %go, -10, %l2
-	or %g0, %l2, %O_1 y lo guardo como un porcentaje de salida ya sea O_0,
-	lamento equivocarme, tratare de que no vuelva a suceder y si llega a suceder de nuevo,
-	corregire rápidamente. el leguaje de máquina se hace de la manera como la veniamos trabajando
-	Recuerden que SPark maneja solo 4 tipos de registro tipo i,l , o y g, de entrada, locales, salida y globales.
+inicialización de una variable negativa, enmiendo mi error asi que les dejo un ejemplo de como se inializa una variable negativa.
+		si tengo f=-10 entonces, en lenguaje de bajo nivel 
+		add %go, -10, %l2
+or %g0, %l2, %O_1 y lo guardo como un porcentaje de salida ya sea O_0,lamento equivocarme, tratare de que no vuelva a suceder y si llega a suceder de nuevo, corregiré rápidamente. el leguaje de máquina se hace de la manera como la veniamos trabajando
+
+Recuerden que SPark maneja solo 4 tipos de registro tipo i,l , o y g, de entrada, locales, salida y globales.
 
 
 
